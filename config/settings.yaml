@@ -1,0 +1,19 @@
+# Gmail Reminders Configuration
+
+gmail:
+  max_results: 50
+  labels_to_check:
+    - INBOX
+    - IMPORTANT
+  days_back: 1
+
+# Extra phrases to detect appointments beyond the built-in list
+appointment_phrases: []
+
+# Senders/subjects to ignore
+exclude:
+  senders: []
+  subjects:
+    - "cancelled:"
+    - "canceled:"
+    - "declined:"

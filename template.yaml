@@ -1,0 +1,76 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Gmail Reminders — auto-creates Google Calendar events from appointment emails
+
+# Runs every 15 minutes to catch scheduling emails quickly.
+
+Parameters:
+  AnthropicApiKey:
+    Type: String
+    NoEcho: true
+    Default: ''
+
+  GmailCredentials:
+    Type: String
+    Description: Base64-encoded Gmail OAuth credentials JSON
+    NoEcho: true
+    Default: ''
+
+  GmailToken:
+    Type: String
+    Description: Base64-encoded Gmail token pickle (must include calendar.events scope)
+    NoEcho: true
+    Default: ''
+
+  CheckIntervalMinutes:
+    Type: Number
+    Description: How often to check for new appointment emails (minutes)
+    Default: 15
+    MinValue: 5
+    MaxValue: 60
+
+Globals:
+  Function:
+    Timeout: 300
+    MemorySize: 512
+    Runtime: python3.12
+
+Resources:
+  GmailRemindersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: gmail-reminders
+      CodeUri: .
+      Handler: lambda_handler.lambda_handler
+      Description: Detects appointment emails and creates Google Calendar events
+      Environment:
+        Variables:
+          ANTHROPIC_API_KEY: !Ref AnthropicApiKey
+          GMAIL_CREDENTIALS_B64: !Ref GmailCredentials
+          GMAIL_TOKEN_B64: !Ref GmailToken
+          LOG_LEVEL: INFO
+      Events:
+        ScheduleEvent:
+          Type: Schedule
+          Properties:
+            Schedule: !Sub 'rate(${CheckIntervalMinutes} minutes)'
+            Description: Check Gmail for new appointment emails
+            Enabled: true
+      Policies:
+        - Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: '*'
+
+  GmailRemindersLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${GmailRemindersFunction}'
+      RetentionInDays: 7
+
+Outputs:
+  GmailRemindersFunction:
+    Value: !GetAtt GmailRemindersFunction.Arn

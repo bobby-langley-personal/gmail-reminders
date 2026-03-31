@@ -1,0 +1,8 @@
+config/credentials.json
+config/token.pickle
+.env
+logs/
+venv/
+__pycache__/
+*.pyc
+.aws-sam/
