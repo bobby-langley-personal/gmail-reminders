@@ -12,14 +12,14 @@ from googleapiclient.discovery import build
 
 logger = logging.getLogger(__name__)
 
-# Reminders in minutes before the event
+# Reminders in minutes before the event.
+# Google Calendar enforces a maximum of 5 reminders per event.
 REMINDER_MINUTES = [
-    1,        # 1 minute
+    15,       # 15 minutes
     60,       # 1 hour
     1440,     # 1 day
-    2880,     # 2 days
     10080,    # 1 week
-    40320,    # 4 weeks (Google Calendar max ~28 days; closest to 1 month)
+    20160,    # 2 weeks
 ]
 
 
