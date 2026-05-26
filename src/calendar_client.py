@@ -128,9 +128,18 @@ class CalendarClient:
 
         Returns dict with 'start' and 'end' keys, or None if date is missing.
         """
+        # Map common abbreviations to IANA timezone names
+        TZ_MAP = {
+            'EDT': 'America/New_York', 'EST': 'America/New_York',
+            'CDT': 'America/Chicago',  'CST': 'America/Chicago',
+            'MDT': 'America/Denver',   'MST': 'America/Denver',
+            'PDT': 'America/Los_Angeles', 'PST': 'America/Los_Angeles',
+        }
+
         date_iso = appointment.get('date_iso', '')
         time_iso = appointment.get('time_iso', '')
-        tz = appointment.get('timezone') or 'America/New_York'
+        raw_tz = appointment.get('timezone') or ''
+        tz = TZ_MAP.get(raw_tz.upper(), raw_tz) or 'America/New_York'
         duration = appointment.get('duration_minutes') or 60
 
         if not date_iso:

@@ -40,6 +40,9 @@ APPOINTMENT_PHRASES = [
     'appointment scheduled',
     'appointment reminder',
     'your appointment',
+    'confirmed your booking',
+    'scheduled',
+    'booking has been confirmed'
 
     # Scheduling tools
     'calendly',
@@ -49,8 +52,10 @@ APPOINTMENT_PHRASES = [
     'webex meeting',
     'has scheduled a meeting',
     'has invited you',
+    'invited you to',
     'join zoom',
     'join the meeting',
+    'scheduled'
 
     # ICS / calendar attachments (snippet text)
     'event.ics',
